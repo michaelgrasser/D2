@@ -2,4 +2,4 @@
 require_relative 'rr_simulator.rb'
 args = ARGV
 sim = Simulator.new
-sim.run(args)
+sim.parseargs(args) ? sim.run : (exit 1)

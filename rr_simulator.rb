@@ -1,17 +1,27 @@
+require_relative 'rr_map'
+require_relative 'rr_prospector'
 # This class runs
 class Simulator
-  @@usage = "Usage: \nruby ruby_rush.rb *seed* *num_prospectors* *num_turns*
+  attr_reader :seed
+  attr_reader :num_prospectors
+  attr_reader :num_turns
+  def initialize
+    @usage = "Usage: \nruby ruby_rush.rb *seed* *num_prospectors* *num_turns*
 *seed* should be an integer \n*num_prospectors* should be a non-negative integer
-*num_turns* should be a non-negative integer" 
-  def run(args) 
-    parseargs(args)
+*num_turns* should be a non-negative integer"
+  end
+
+  def run
+    create_map
   end
 
   def parseargs(args)
     if args.size != 3 || !match_all_args(args)
-      puts @@usage
+      puts @usage
+      false
     else
       setargs(args)
+      true
     end
   end
 
@@ -35,8 +45,16 @@ class Simulator
   end
 
   def setargs(args)
-    @seed = args.at(0)
-    @num_prospectors = args.at(1)
-    @num_turns = args.at(2)
+    @seed = args.at(0).to_i
+    @num_prospectors = args.at(1).to_i
+    @num_turns = args.at(2).to_i
+  end
+
+  def create_map
+    @map = Map.new(@seed)
+    (1..num_prospectors).each do
+      prospector = Prospector.new(@num_turns, @map)
+      prospector.prospect
+    end
   end
 end
