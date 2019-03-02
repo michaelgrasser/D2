@@ -52,8 +52,8 @@ class Simulator
 
   def create_map
     @map = Map.new(@seed)
-    (1..num_prospectors).each do
-      prospector = Prospector.new(@num_turns, @map)
+    (1..num_prospectors).each do |i|
+      prospector = Prospector.new(@num_turns, @map, i)
       prospector.prospect
     end
   end

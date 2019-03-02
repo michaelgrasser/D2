@@ -27,10 +27,10 @@ class Map
     @moves.at(pos).at(@prng.rand(0...@moves.at(pos).size))
   end
 
-  # Returns number of rubies found, and 0 if real, 1 if fake
+  # Returns number of rubies found [real, fake]
   def mine(pos)
     rubies = @rubies.at(pos)
-    [rubies.at(0).zero? ? 0 : @prng.rand(0...rubies.at(0)),
-     rubies.at(1).zero? ? 0 : @prng.rand(0...rubies.at(1))]
+    [rubies.at(0).zero? ? 0 : @prng.rand(0..rubies.at(0)),
+     rubies.at(1).zero? ? 0 : @prng.rand(0..rubies.at(1))]
   end
 end
