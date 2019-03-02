@@ -6,11 +6,6 @@ class Simulator
   attr_reader :num_prospectors
   attr_reader :num_turns
   attr_reader :map
-  def initialize
-    @usage = "Usage: \nruby ruby_rush.rb *seed* *num_prospectors* *num_turns*
-*seed* should be an integer \n*num_prospectors* should be a non-negative integer
-*num_turns* should be a non-negative integer"
-  end
 
   def run
     create_map
@@ -19,7 +14,6 @@ class Simulator
 
   def parseargs(args)
     if args.size != 3 || !match_all_args(args)
-      puts @usage
       false
     else
       setargs(args)

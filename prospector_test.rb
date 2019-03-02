@@ -4,6 +4,18 @@ require_relative 'rr_prospector'
 require_relative 'rr_map'
 
 class ProspectorTest < Minitest::Test
+  # UNIT TESTS FOR METHOD prospect_turn
+  # Equivalence classes:
+  # map.mine finds rubies -> continues looping
+  # map.mine finds 0 rubies and 0 fake rubies -> returns rubies found that turns
+  # Tests that loop stops when 0 rubies and 0 fake rubies are found
+  def test_prospect_turn
+    mock_map = Minitest::Mock.new("map")
+    def mock_map.mine(a); [0,0]; end
+    pros = Prospector.new(0,mock_map,0)
+    assert pros.prospect_turn == [0,0]
+  end
+
   # UNIT TESTS FOR METHOD turn_putter(real, fake)
   # Equivalence classes:
   # real, fake both == 0 returns "\tFound no rubies or fake rubies in <location>
@@ -12,26 +24,22 @@ class ProspectorTest < Minitest::Test
   # real, fake > 0 returns "\tFound <real> ruby/rubies and <fake> fake ruby/rubies in <location>"
   # Tests that turn_putter returns correct on 0,0
   def test_turn_putter_none
-    map = Map.new(1234)
-    pros = Prospector.new(0,map,0)
+    pros = Prospector.new(0,0,0)
     assert pros.turn_putter(0,0).eql? "\tFound no rubies or fake rubies in Enumerable Canyon"
   end
   # Tests that turn_putter return correctly on 0 real 1 fake
   def test_turn_putter_fake
-    map = Map.new(1234)
-    pros = Prospector.new(0,map,0)
+    pros = Prospector.new(0,0,0)
     assert pros.turn_putter(0,1).eql? "\tFound 1 fake ruby in Enumerable Canyon"
   end
   # Tests that turn_putter return correctly on 1 real 0 fake
   def test_turn_putter_real
-    map = Map.new(1234)
-    pros = Prospector.new(0,map,0)
+    pros = Prospector.new(0,0,0)
     assert pros.turn_putter(1,0).eql? "\tFound 1 ruby in Enumerable Canyon"
   end
   # Tests that turn_putter return correctly on 1 real 1 fake
   def test_turn_putter_both
-    map = Map.new(1234)
-    pros = Prospector.new(0,map,0)
+    pros = Prospector.new(0,0,0)
     assert pros.turn_putter(1,1).eql? "\tFound 1 ruby and 1 fake ruby in Enumerable Canyon"
   end
 
@@ -115,4 +123,44 @@ class ProspectorTest < Minitest::Test
     pros.instance_variable_set(:@real, 20)
     assert pros.end_string.eql? 'Going home victorious!'
   end
+
+  # UNIT TESTS FOR start_string
+  # Equivalence classes: none
+  def test_start_string
+    pros = Prospector.new(0,0,0)
+    assert pros.start_string.eql? 'Rubyist #0 starting in Enumerable Canyon.'
+  end
+
+  # UNIT TESTS FOR moving_string(pos, new_pos)
+  # Equivalence classes: none
+  def test_moving_string
+    pros = Prospector.new(0,0,0)
+    assert pros.moving_string(0,0).eql? 'Heading from Enumerable Canyon to Enumerable Canyon.'
+  end
+
+    # UNIT TESTS FOR add_to_rubies(rubies)
+    # Equivalence classes: none
+    def test_add_to_rubies
+      pros = Prospector.new(0,0,0)
+      pros.add_to_rubies([1,1])
+      assert pros.real == 1 && pros.fake == 1
+    end
+
+    # UNIT TESTS FOR check_end_of_rubyist(turn, new_pos)
+    # Equivalence classes:
+    # Turn == number of turns -> return ruby_count and end_string
+    # Turn != number of turns -> return moving_string
+    # Test to check if it returns correctly when turn == number of turns
+    def test_check_end_of_rubyist_end
+      pros = Prospector.new(0,0,0)
+      def pros.ruby_count; "ruby_count"; end
+      def pros.end_string; "end_string"; end
+      assert pros.check_end_of_rubyist(0,0).eql? 'ruby_countend_string'
+    end
+    # Test to check if it returns correctly when turn == number of turns
+    def test_check_end_of_rubyist_not_end
+      pros = Prospector.new(3,0,0)
+      def pros.moving_string(a,b); "moving"; end
+      assert pros.check_end_of_rubyist(0,0).eql? 'moving'
+    end
 end

@@ -1,5 +1,7 @@
 # Prospector class
 class Prospector
+  attr_reader :real
+  attr_reader :fake
   def initialize(turns, map, id)
     @pos = 0
     @real = 0
@@ -13,25 +15,42 @@ class Prospector
   end
 
   def prospect
-    puts "Rubyist ##{@id} starting in Enumerable Canyon."
+    puts start_string
     (1..@turns).each do |i|
-      prospect_turn
+      turn = prospect_turn
+      add_to_rubies(turn)
       new_pos = @map.move(@pos)
-      i == @turns ? puts(ruby_count + end_string) : puts("Heading from #{@locations.at(@pos)} to #{@locations.at(new_pos)}.")
+      puts check_end_of_rubyist(i, new_pos)
       @pos = new_pos
     end
   end
 
   def prospect_turn
+    real = 0
+    fake = 0
     success = true
     while success
       turn = @map.mine(@pos)
-      @real += turn.at(0)
-      @fake += turn.at(1)
-      success = !(turn.at(0) + turn.at(1)).zero?
-      @days += 1
       puts turn_putter(turn.at(0), turn.at(1))
+      success = !(turn.at(0) + turn.at(1)).zero?
+      real += turn.at(0)
+      fake += turn.at(1)
+      @days += 1
     end
+    [real, fake]
+  end
+
+  def add_to_rubies(rubies)
+    @real += rubies.at(0)
+    @fake += rubies.at(1)
+  end
+
+  def check_end_of_rubyist(turn, new_pos)
+    turn == @turns ? ruby_count + end_string : moving_string(@pos, new_pos)
+  end
+
+  def start_string
+    "Rubyist ##{@id} starting in Enumerable Canyon."
   end
 
   def turn_putter(real, fake)
@@ -65,6 +84,10 @@ class Prospector
     else
       "#{rubies} fake rubies"
     end
+  end
+
+  def moving_string(pos, new_pos)
+    "Heading from #{@locations.at(pos)} to #{@locations.at(new_pos)}."
   end
 
   def ruby_count

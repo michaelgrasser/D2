@@ -15,6 +15,13 @@ class SimulatorTest < Minitest::Test
     refute sim.parseargs(['1','2'])
   end
 
+  # Tests that parseargs returns false on no args
+  # EDGE CASE
+  def test_parseargs_none
+    sim = Simulator.new
+    refute sim.parseargs([])
+  end
+
   # Tests that parseargs returns false on args > 3
   def test_parseargs_more_than_3
     sim = Simulator.new
@@ -80,6 +87,7 @@ class SimulatorTest < Minitest::Test
   # input >=0 -> returns true
   #
   # Tests match_args with non-integer
+  # EDGE CASE
   def test_match_args_string
     sim = Simulator.new
     refute sim.match_args('laboon')
@@ -116,6 +124,6 @@ class SimulatorTest < Minitest::Test
     sim = Simulator.new
     sim.instance_variable_set(:@seed, 1234)
     sim.create_map
-    assert sim.map
+    assert sim.map.prng == Random.new(1234)
   end
 end
