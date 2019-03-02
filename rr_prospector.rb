@@ -17,7 +17,7 @@ class Prospector
     (1..@turns).each do |i|
       prospect_turn
       new_pos = @map.move(@pos)
-      i == @turns ? end_string : puts("Heading from #{@locations.at(@pos)} to #{@locations.at(new_pos)}.")
+      i == @turns ? puts(ruby_count + end_string) : puts("Heading from #{@locations.at(@pos)} to #{@locations.at(new_pos)}.")
       @pos = new_pos
     end
   end
@@ -30,18 +30,18 @@ class Prospector
       @fake += turn.at(1)
       success = !(turn.at(0) + turn.at(1)).zero?
       @days += 1
-      turn_putter(turn.at(0), turn.at(1))
+      puts turn_putter(turn.at(0), turn.at(1))
     end
   end
 
   def turn_putter(real, fake)
     loc = @locations.at(@pos)
     if (real + fake).zero?
-      puts "\tFound no rubies or fake rubies in #{loc}"
+      "\tFound no rubies or fake rubies in #{loc}"
     else
-      print "\tFound #{ruby_string(real)}"
-      print(!real.zero? && !fake.zero? ? ' and ' : '')
-      print "#{fake_string(fake)} in #{loc}\n"
+      "\tFound #{ruby_string(real)}"\
+      "#{(!real.zero? && !fake.zero? ? ' and ' : '')}"\
+      "#{fake_string(fake)} in #{loc}"
     end
   end
 
@@ -52,7 +52,7 @@ class Prospector
     when 1
       '1 ruby'
     else
-      '{rubies} rubies'
+      "#{rubies} rubies"
     end
   end
 
@@ -63,18 +63,21 @@ class Prospector
     when 1
       '1 fake ruby'
     else
-      '{rubies} fake rubies'
+      "#{rubies} fake rubies"
     end
   end
 
+  def ruby_count
+    "After #{@days} days, Rubyist ##{@id} found:\n"\
+    "\t#{@real.zero? ? '0 rubies' : ruby_string(@real)}.\n"\
+    "\t#{@fake.zero? ? '0 fake rubies' : fake_string(@fake)}.\n"\
+  end
+
   def end_string
-    puts "After #{@days} days, Rubyist #{@id} found:"
-    puts "#{@real} rubies."
-    puts "#{@fake} fake rubies"
-    if (@real + @fake).zero?
-      puts 'Going home empty handed'
+    if @real.zero?
+      'Going home empty handed.'
     else
-      @real < 10 ? puts('Going home sad.') : puts('Going home victorious!')
+      @real < 10 ? 'Going home sad.' : 'Going home victorious!'
     end
   end
 end

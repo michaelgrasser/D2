@@ -109,4 +109,13 @@ class SimulatorTest < Minitest::Test
     assert sim.num_prospectors == 2
     assert sim.num_turns == 3
   end
+
+  # UNIT TESTS FOR create_map
+  # Tests that map is created correctly
+  def test_create_map
+    sim = Simulator.new
+    sim.instance_variable_set(:@seed, 1234)
+    sim.create_map
+    assert sim.map
+  end
 end

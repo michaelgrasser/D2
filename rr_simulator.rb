@@ -5,6 +5,7 @@ class Simulator
   attr_reader :seed
   attr_reader :num_prospectors
   attr_reader :num_turns
+  attr_reader :map
   def initialize
     @usage = "Usage: \nruby ruby_rush.rb *seed* *num_prospectors* *num_turns*
 *seed* should be an integer \n*num_prospectors* should be a non-negative integer
@@ -13,6 +14,7 @@ class Simulator
 
   def run
     create_map
+    prospect
   end
 
   def parseargs(args)
@@ -52,6 +54,9 @@ class Simulator
 
   def create_map
     @map = Map.new(@seed)
+  end
+
+  def prospect
     (1..num_prospectors).each do |i|
       prospector = Prospector.new(@num_turns, @map, i)
       prospector.prospect
